@@ -112,6 +112,6 @@ if __name__ == '__main__':
     if this_is_debugging == True:
         app.run(host="0.0.0.0", port=this_port, debug=this_is_debugging)
     else:    
-        http_server = WSGIServer(('', this_port), app)
+        http_server = WSGIServer(('', this_port), application=app, log=None)
         http_server.serve_forever()            
         
