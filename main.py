@@ -18,9 +18,9 @@ log.setLevel(logging.ERROR)
 # debugging
 ################################################################################
 
-this_url = 'https://elearning-chattr1n.c9users.io/'
-this_port = 8080
-this_is_debugging = True
+# this_url = 'https://elearning-chattr1n.c9users.io/'
+this_port = 8084
+this_is_debugging = False
 
 ################################################################################
 # encryption
