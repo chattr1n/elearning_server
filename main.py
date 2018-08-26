@@ -91,10 +91,10 @@ def elearning():
     userid = encrypt(userid)    
     session['userid'] = userid
     
-    courseid = request.form['CourseID']    
-    ID = encrypt(courseid + '|' + userid)   
+    coursecode = request.form['CourseCode']    
+    ID = encrypt(coursecode + '|' + userid)   
         
-    return redirect('/course/' + courseid + '/story.html?ID=' + ID)
+    return redirect('/course/' + coursecode + '/story.html?ID=' + ID)
                 
 @app.route('/score/<ID>', methods=['GET', 'POST'])                 
 def score(ID):    
@@ -102,9 +102,9 @@ def score(ID):
         return 'Error. code=005. Unathorized access.'
         
     score = request.form['score']        
-    [courseid, userid] = decrypt(ID).split('|')        
+    [coursecode, userid] = decrypt(ID).split('|')        
     userid = decrypt(userid)        
-    return render_template('score.html', userid=userid, courseid=courseid, score=score)    
+    return render_template('score.html', userid=userid, coursecode=coursecode, score=score)    
                  
 if __name__ == '__main__':      
     
