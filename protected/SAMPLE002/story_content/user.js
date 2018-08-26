@@ -2,7 +2,7 @@ function ExecuteScript(strId)
 {
   switch (strId)
   {
-      case "6QJfg4YzOpJ":
+      case "5trz20Qi2HJ":
         Script1();
         break;
   }
@@ -26,7 +26,7 @@ var score = player.GetVar("ScorePercent");
 
 var output = '/score/' + ID;
 
-var href = 'http://elearning-chattr1n.c9users.io' + output 
+var href = 'https://roodee-data.com:448' + output 
 
 document.body.innerHTML += '<form id="scoreform" action="' + href + '" method="post"><input type="hidden" name="score" value="' + score + '"></form>';
 document.getElementById("scoreform").submit();

@@ -18,7 +18,6 @@ log.setLevel(logging.ERROR)
 # debugging
 ################################################################################
 
-# this_url = 'https://elearning-chattr1n.c9users.io/'
 this_port = 8084
 this_is_debugging = False
 
@@ -63,10 +62,10 @@ def special_requirement(f):
     def wrap(*arg, **kwargs):
         try:            
             userid = session['userid'] if 'userid' in session else ''
-            if decrypt(userid) in ['5555', '6666', '1234']:                
-                return f(*arg, **kwargs)
-            else:
-                return 'Error. code=001. Unathorized access.'
+            #if decrypt(userid) is not None:                
+            return f(*arg, **kwargs)
+            #else:
+            #    return 'Error. code=001. Unathorized access.'
         except Exception as e:            
             return 'Error. code=002. Error is ' + str(e)
             
