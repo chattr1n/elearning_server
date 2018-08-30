@@ -1,15 +1,25 @@
 from flask import Flask, render_template, redirect, send_from_directory, session, request
 from functools import wraps
-from datetime import timedelta
+from datetime import datetime, timedelta
 import os
-import base64
+import hashlib
 import logging
-
+import base64
+from pymongo import MongoClient
+import ssl
+from bson.objectid import ObjectId
 from gevent.pywsgi import WSGIServer
 
 app = Flask(__name__, instance_path = os.getcwd())
-app.secret_key = 'ROODEEISTHEBEST'
+
+# app.secret_key = 'ROODEEISTHEBEST'
+app.secret_key = '4b93b608174e49f7'
 app.config['SESSION_TYPE'] = 'filesystem'    
+
+timeout_in_minute = 30
+
+client = MongoClient('mongodb://devuser:%7ETesting0001@aws-ap-southeast-1-portal.0.dblayer.com:15718,aws-ap-southeast-1-portal.2.dblayer.com:15718/gcp01?readPreference=primary&ssl=true', ssl_cert_reqs=ssl.CERT_NONE)
+db = client['gcp01']    
     
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.ERROR)
@@ -18,13 +28,13 @@ log.setLevel(logging.ERROR)
 # debugging
 ################################################################################
 
-this_port = 8084
+this_port = 8080 # prod = 8084
 this_is_debugging = False
 
 ################################################################################
 # encryption
 ################################################################################
-    
+
 def encrypt(clear):
     key = app.secret_key
     enc = []
@@ -42,7 +52,44 @@ def decrypt(enc):
         key_c = key[i % len(key)]
         dec_c = chr((256 + ord(enc[i]) - ord(key_c)) % 256)
         dec.append(dec_c)
-    return "".join(dec)    
+    return "".join(dec)      
+    
+def md5_checker(clear, enc):   
+    text = app.secret_key + clear
+    if enc == hashlib.md5(text.encode('utf-8')).hexdigest():
+        return True    
+    return False
+    
+################################################################################
+# helper
+################################################################################    
+
+def getinfo(ID):
+    [courseid, userid, enc] = ID.split('|')
+    clear = courseid + '|' +  userid    
+    
+    if not md5_checker(clear, enc):        
+        return [None, None, None, None, None]
+        
+    coursecode = ''
+    for result in db['elearning'].find({'_id': ObjectId(courseid)}):
+        coursecode = result['code']        
+        if coursecode != '':
+            break
+        
+    if coursecode == '':
+        return [None, None, None, None, None]
+        
+    return  [courseid, userid, clear, enc, coursecode]
+        
+def get_dt_in_str(addtime):
+    dt = datetime.now() + timedelta(minutes=addtime)
+    return encrypt(dt.strftime('%Y%m%d%H%M%S'))
+    
+def time_has_passed(str):    
+    dt1 = datetime.strptime(decrypt(str), '%Y%m%d%H%M%S')
+    dt2 = datetime.now()    
+    return dt1 < dt2 # true if time has passed
     
 ################################################################################
 # routing
@@ -55,55 +102,59 @@ def index():
 @app.before_request
 def make_session_permanent():
     session.permanent = True
-    app.permanent_session_lifetime = timedelta(minutes=30)    
+    app.permanent_session_lifetime = timedelta(minutes=timeout_in_minute)    
 
 def special_requirement(f):
     @wraps(f)
     def wrap(*arg, **kwargs):
         try:            
             userid = session['userid'] if 'userid' in session else ''
-            #if decrypt(userid) is not None:                
-            return f(*arg, **kwargs)
-            #else:
-            #    return 'Error. code=001. Unathorized access.'
+            if userid is not None and userid != '':                 
+                return f(*arg, **kwargs)
+            else:
+                return 'Error. code=001. Unathorized access.'
         except Exception as e:            
-            return 'Error. code=002. Error is ' + str(e)
-            
-        session['userid'] = ''         
+            return 'Error. code=002. Unathorized access.'  
     return wrap
         
-@app.route('/course/<path:filename>')
+@app.route('/course/<expired>/<path:filename>')
 @special_requirement
-def protected(filename):    
-    try:
-        path = os.path.join(app.instance_path, 'protected')
-        return send_from_directory(path,filename)    
+def protected(expired, filename):    
+    
+    if filename.split('/')[1] in ('story.html', 'story_flash.html', 'story_html5.html'):        
+        ID = request.args.get('ID')
+        [courseid, userid, clear, enc, coursecode] = getinfo(ID)        
+        if userid is None:
+            return 'Error. code=003. Bad session.'
+            
+    try:        
+        path = os.path.join(app.instance_path, 'protected')        
+        if not time_has_passed(expired):
+            return send_from_directory(path,filename)    
+        else:
+            return 'Error. code=004. Session Expired.'
     except Exception as e:
-        return 'Error. code=003. Could not find your course.'   
-        
-@app.route('/elearning', methods=['GET', 'POST'])
-def elearning():   
+        return 'Error. code=005. Cannot get files.'
+           
+@app.route('/elearning/<ID>')
+def elearning(ID):                   
+    [courseid, userid, clear, enc, coursecode] = getinfo(ID)
     
-    if request.method == "GET":
-        return 'Error. code=004. Unathorized access.'
+    if userid is None:
+        return 'Error. code=006. Unathorized access.'
         
-    userid = request.form['UserId']    
-    userid = encrypt(userid)    
     session['userid'] = userid
-    
-    coursecode = request.form['CourseCode']    
-    ID = encrypt(coursecode + '|' + userid)   
-        
-    return redirect('/course/' + coursecode + '/story.html?ID=' + ID)
+    return redirect('/course/' + get_dt_in_str(30) + '/' + coursecode + '/story.html?ID=' + ID)
                 
 @app.route('/score/<ID>', methods=['GET', 'POST'])                 
 def score(ID):    
+        
     if request.method == "GET":
         return 'Error. code=005. Unathorized access.'
         
     score = request.form['score']        
-    [coursecode, userid] = decrypt(ID).split('|')        
-    userid = decrypt(userid)        
+    [courseid, userid, clear, enc, coursecode] = getinfo(ID)
+        
     return render_template('score.html', userid=userid, coursecode=coursecode, score=score)    
                  
 if __name__ == '__main__':      
