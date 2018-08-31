@@ -29,7 +29,7 @@ log.setLevel(logging.ERROR)
 ################################################################################
 
 this_port = 8084 # prod = 8084
-this_is_debugging = False
+this_is_debugging = True
 
 ################################################################################
 # encryption
@@ -91,6 +91,21 @@ def time_has_passed(str):
     dt2 = datetime.now()    
     return dt1 < dt2 # true if time has passed
     
+def save_score(userid, courseid, score):
+    db["users"].update( 
+    	{  
+    		"_id": userid, 
+    		"elearning.courseid": ObjectId(courseid) 
+    	},
+    	{ "$set": { "elearning.$.status": str(score) } }
+    )
+
+def get_user_name(userid):
+    name = ''
+    for result in db['users'].find({_id: 'epCFQqF2XcaPgwRi8'}, {'userProfile.name':1, 'userProfile.surname':1}):
+        name = result['userProfile']['name'] + ' '  + result['userProfile']['surname']
+    return name
+    
 ################################################################################
 # routing
 ################################################################################
@@ -151,11 +166,13 @@ def score(ID):
         
     if request.method == "GET":
         return 'Error. code=005. Unathorized access.'
-        
+            
     score = request.form['score']        
     [courseid, userid, clear, enc, coursecode] = getinfo(ID)
-        
-    return render_template('score.html', userid=userid, coursecode=coursecode, score=score)    
+    
+
+                        
+    return render_template('score.html', user=get_user_name(userid), coursecode=coursecode, score=score)    
                  
 if __name__ == '__main__':      
     
