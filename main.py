@@ -29,7 +29,7 @@ log.setLevel(logging.ERROR)
 ################################################################################
 
 this_port = 8084 # prod = 8084
-this_is_debugging = True
+this_is_debugging = False
 
 ################################################################################
 # encryption
@@ -72,14 +72,15 @@ def getinfo(ID):
         return [None, None, None, None, None]
         
     coursecode = ''
-    for result in db['elearning'].find({'_id': ObjectId(courseid)}):
+    for result in db['elearning'].find({'_id': courseid}):
         coursecode = result['code']        
         if coursecode != '':
             break
         
     if coursecode == '':
         return [None, None, None, None, None]
-        
+
+    # print([courseid, userid, clear, enc, coursecode])        
     return  [courseid, userid, clear, enc, coursecode]
         
 def get_dt_in_str(addtime):
@@ -95,14 +96,14 @@ def save_score(userid, courseid, score):
     db["users"].update( 
     	{  
     		"_id": userid, 
-    		"elearning.courseid": ObjectId(courseid) 
+    		"elearning.courseid": courseid
     	},
-    	{ "$set": { "elearning.$.status": str(score) } }
+    	{ "$set": { "elearning.$.status": str(score), "elearning.$.completed_date": datetime.now()} }
     )
 
 def get_user_name(userid):
     name = ''
-    for result in db['users'].find({_id: 'epCFQqF2XcaPgwRi8'}, {'userProfile.name':1, 'userProfile.surname':1}):
+    for result in db['users'].find({'_id': userid}, {'userProfile':1}):
         name = result['userProfile']['name'] + ' '  + result['userProfile']['surname']
     return name
     
@@ -169,9 +170,8 @@ def score(ID):
             
     score = request.form['score']        
     [courseid, userid, clear, enc, coursecode] = getinfo(ID)
+    save_score(userid, courseid, score)
     
-
-                        
     return render_template('score.html', user=get_user_name(userid), coursecode=coursecode, score=score)    
                  
 if __name__ == '__main__':      
