@@ -93,14 +93,23 @@ def time_has_passed(str):
     return dt1 < dt2 # true if time has passed
     
 def save_score(userid, courseid, score):
-    db["users"].update( 
-    	{  
-    		"_id": userid, 
-    		"elearning.courseid": courseid
-    	},
-    	{ "$set": { "elearning.$.status": str(score), "elearning.$.completed_date": datetime.now()} },
-        { "upsert": True }
-    )
+    if db["users"].find({"_id": userid, "elearning.courseid": courseid}).count() > 0:
+    	
+        db["users"].update( 
+        	{  
+        		"_id": userid, 
+        		"elearning.courseid": courseid
+        	},
+        	{ "$set": { "elearning.$.status": str(score), "elearning.$.completed_date": datetime.now()} }
+        )
+        
+    else:
+        db["users"].update( 
+        	{  
+        		"_id": userid
+        	},
+        	{ "$push": { "elearning" : {"courseid": courseid,"status": str(score), "completed_date": datetime.now()}} }
+        )
 
 def get_user_name(userid):
     name = ''
