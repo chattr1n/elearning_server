@@ -98,7 +98,8 @@ def save_score(userid, courseid, score):
     		"_id": userid, 
     		"elearning.courseid": courseid
     	},
-    	{ "$set": { "elearning.$.status": str(score), "elearning.$.completed_date": datetime.now()} }
+    	{ "$set": { "elearning.$.status": str(score), "elearning.$.completed_date": datetime.now()} },
+        { "upsert": True }
     )
 
 def get_user_name(userid):
