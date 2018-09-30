@@ -33,7 +33,6 @@ log.setLevel(logging.ERROR)
 # debugging
 ################################################################################
 
-this_port = 8080 # prod = 8084
 this_is_debugging = False
 
 ################################################################################
@@ -195,7 +194,7 @@ def score(ID):
           
 number_of_processes = 3           
 print 'Starting %s processes' % number_of_processes
-listener = _tcp_listener(('', this_port))
+listener = _tcp_listener(('', 8084))
 
 def serve_forever(listener):
     pywsgi.WSGIServer(listener, application=app, log=None).serve_forever()
@@ -203,7 +202,7 @@ def serve_forever(listener):
 if __name__ == '__main__':      
     
     if this_is_debugging == True:
-        app.run(host="0.0.0.0", port=this_port, debug=this_is_debugging)
+        app.run(host="0.0.0.0", port=8080, debug=this_is_debugging)
     else:    
         
         for i in range(number_of_processes):
