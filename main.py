@@ -193,7 +193,6 @@ def score(ID):
 ################################################################################
           
 number_of_processes = 3           
-print 'Starting %s processes' % number_of_processes
 listener = _tcp_listener(('', 8084))
 
 def serve_forever(listener):
