@@ -2,7 +2,7 @@ function ExecuteScript(strId)
 {
   switch (strId)
   {
-      case "5trz20Qi2HJ":
+      case "6ahXeEj0kLy":
         Script1();
         break;
   }
@@ -28,7 +28,7 @@ var output = '/score/' + ID;
 
 var href = 'https://roodee-data.com:448' + output 
 
-document.body.innerHTML += '<form id="scoreform" action="' + href + '" method="post"><input type="hidden" name="score" value="' + score + '"></form>';
+document.body.innerHTML += '<iframe width="0" height="0" border="0" name="dummyframe" id="dummyframe"></iframe><form id="scoreform" target="dummyframe" action="' + href + '" method="post"><input type="hidden" name="score" value="' + "100" + '"></form>';
 document.getElementById("scoreform").submit();
 }
 
