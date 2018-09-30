@@ -5,7 +5,7 @@ import os
 import hashlib
 import logging
 import base64
-from pymongo import MongoClient
+from flask_pymongo import PyMongo
 import ssl
 from bson.objectid import ObjectId
 
@@ -23,8 +23,9 @@ app.config['SESSION_TYPE'] = 'filesystem'
 
 timeout_in_minute = 10
 
-client = MongoClient('mongodb://devuser:%7ETesting0001@aws-ap-southeast-1-portal.0.dblayer.com:15718,aws-ap-southeast-1-portal.2.dblayer.com:15718/gcp01?readPreference=primary&ssl=true', ssl_cert_reqs=ssl.CERT_NONE)
-db = client['gcp01']    
+connectionstring = 'mongodb://devuser:%7ETesting0001@aws-ap-southeast-1-portal.0.dblayer.com:15718,aws-ap-southeast-1-portal.2.dblayer.com:15718/gcp01?ssl=true&ssl_cert_reqs=CERT_NONE'
+app.config["MONGO_URI"] = connectionstring
+mongo = PyMongo(app)
     
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.ERROR)
@@ -76,7 +77,7 @@ def getinfo(ID):
         return [None, None, None, None, None]
         
     coursecode = ''
-    for result in db['elearning'].find({'_id': courseid}):
+    for result in mongo.db['elearning'].find({'_id': courseid}):
         coursecode = result['code']        
         if coursecode != '':
             break
@@ -97,9 +98,9 @@ def time_has_passed(str):
     return dt1 < dt2 # true if time has passed
     
 def save_score(userid, courseid, score):
-    if db["users"].find({"_id": userid, "elearning.courseid": courseid}).count() > 0:
+    if mongo.db["users"].find({"_id": userid, "elearning.courseid": courseid}).count() > 0:
     	
-        db["users"].update( 
+        mongo.db["users"].update( 
         	{  
         		"_id": userid, 
         		"elearning.courseid": courseid
@@ -108,7 +109,7 @@ def save_score(userid, courseid, score):
         )
         
     else:
-        db["users"].update( 
+        mongo.db["users"].update( 
         	{  
         		"_id": userid
         	},
@@ -117,7 +118,7 @@ def save_score(userid, courseid, score):
 
 def get_user_name(userid):
     name = ''
-    for result in db['users'].find({'_id': userid}, {'userProfile':1}):
+    for result in mongo.db['users'].find({'_id': userid}, {'userProfile':1}):
         name = result['userProfile']['name'] + ' '  + result['userProfile']['surname']
     return name
     
