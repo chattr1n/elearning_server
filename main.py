@@ -8,7 +8,12 @@ import base64
 from pymongo import MongoClient
 import ssl
 from bson.objectid import ObjectId
-from gevent.pywsgi import WSGIServer
+
+from gevent import server
+from gevent.server import _tcp_listener
+from gevent import pywsgi
+from gevent.monkey import patch_all; patch_all()
+from multiprocessing import Process, current_process, cpu_count
 
 app = Flask(__name__, instance_path = os.getcwd())
 
@@ -28,7 +33,7 @@ log.setLevel(logging.ERROR)
 # debugging
 ################################################################################
 
-this_port = 8084 # prod = 8084
+this_port = 8080 # prod = 8084
 this_is_debugging = False
 
 ################################################################################
@@ -183,12 +188,26 @@ def score(ID):
     save_score(userid, courseid, score)
     
     return render_template('score.html', user=get_user_name(userid), coursecode=coursecode, score=score)    
-                 
+  
+################################################################################
+# serve
+################################################################################
+          
+number_of_processes = 3           
+print 'Starting %s processes' % number_of_processes
+listener = _tcp_listener(('', this_port))
+
+def serve_forever(listener):
+    pywsgi.WSGIServer(listener, application=app, log=None).serve_forever()
+    
 if __name__ == '__main__':      
     
     if this_is_debugging == True:
         app.run(host="0.0.0.0", port=this_port, debug=this_is_debugging)
     else:    
-        http_server = WSGIServer(('', this_port), application=app, log=None)
-        http_server.serve_forever()            
         
+        for i in range(number_of_processes):
+            print ("starting process" + str(i))
+            Process(target=serve_forever, args=(listener,)).start()
+    
+        serve_forever(listener)

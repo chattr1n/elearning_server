@@ -1,4 +1,4 @@
-hi
+
      ,-----.,--.                  ,--. ,---.   ,--.,------.  ,------.
     '  .--./|  | ,---. ,--.,--. ,-|  || o   \  |  ||  .-.  \ |  .---'
     |  |    |  || .-. ||  ||  |' .-. |`..'  |  |  ||  |  \  :|  `--, 
@@ -16,3 +16,6 @@ http://www.youtube.com/user/c9ide.
 
 Happy coding!
 The Cloud9 IDE team
+
+How to install gevent: 
+https://www.howtoinstall.co/en/ubuntu/trusty/python-gevent
