@@ -12,8 +12,9 @@ from bson.objectid import ObjectId
 from gevent import server
 from gevent.server import _tcp_listener
 from gevent import pywsgi
-from gevent.monkey import patch_all; patch_all()
 from multiprocessing import Process, current_process, cpu_count
+
+import json
 
 app = Flask(__name__, instance_path = os.getcwd())
 
@@ -21,12 +22,16 @@ app = Flask(__name__, instance_path = os.getcwd())
 app.secret_key = '4b93b608174e49f7'
 app.config['SESSION_TYPE'] = 'filesystem'    
 
-timeout_in_minute = 10
+timeout_in_minute = 60
 
-connectionstring = 'mongodb://devuser:%7ETesting0001@aws-ap-southeast-1-portal.0.dblayer.com:15718,aws-ap-southeast-1-portal.2.dblayer.com:15718/gcp01?ssl=true&ssl_cert_reqs=CERT_NONE'
-app.config["MONGO_URI"] = connectionstring
-mongo = PyMongo(app)
-    
+mongos = {}
+connectionstrings = {}
+
+with open('settings.json') as input:
+    connectionstrings = (json.load(input))
+    for key, value in connectionstrings.items():
+        mongos[key] = PyMongo(app, connectionstrings[key])
+
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.ERROR)
 
@@ -34,7 +39,7 @@ log.setLevel(logging.ERROR)
 # debugging
 ################################################################################
 
-this_is_debugging = False
+this_is_debugging = True
 
 ################################################################################
 # encryption
@@ -69,13 +74,15 @@ def md5_checker(clear, enc):
 # helper
 ################################################################################    
 
-def getinfo(ID):
+def getinfo(ID, orgkey):
     [courseid, userid, enc] = ID.split('|')
     clear = courseid + '|' +  userid    
     
     if not md5_checker(clear, enc):        
         return [None, None, None, None, None]
-        
+
+    mongo = mongos[orgkey]
+
     coursecode = ''
     for result in mongo.db['elearning'].find({'_id': courseid}):
         coursecode = result['code']        
@@ -97,7 +104,10 @@ def time_has_passed(str):
     dt2 = datetime.now()    
     return dt1 < dt2 # true if time has passed
     
-def save_score(userid, courseid, score):
+def save_score(userid, courseid, score, orgkey):
+
+    mongo = mongos[orgkey]
+
     if mongo.db["users"].find({"_id": userid, "elearning.courseid": courseid}).count() > 0:
     	
         mongo.db["users"].update( 
@@ -116,7 +126,8 @@ def save_score(userid, courseid, score):
         	{ "$push": { "elearning" : {"courseid": courseid,"status": str(score), "completed_date": datetime.now()}} }
         )
 
-def get_user_name(userid):
+def get_user_name(userid, orgkey):
+    mongo = mongos[orgkey]
     name = ''
     for result in mongo.db['users'].find({'_id': userid}, {'userProfile':1}):
         name = result['userProfile']['name'] + ' '  + result['userProfile']['surname']
@@ -148,13 +159,13 @@ def special_requirement(f):
             return 'Error. code=002. Unathorized access.'  
     return wrap
         
-@app.route('/course/<expired>/<path:filename>')
+@app.route('/course/<expired>/<orgkey>/<path:filename>')
 @special_requirement
-def protected(expired, filename):    
+def protected(expired, filename, orgkey):
     
     if filename.split('/')[1] in ('story.html', 'story_flash.html', 'story_html5.html'):        
         ID = request.args.get('ID')
-        [courseid, userid, clear, enc, coursecode] = getinfo(ID)        
+        [courseid, userid, clear, enc, coursecode] = getinfo(ID, orgkey)
         if userid is None:
             return 'Error. code=003. Bad session.'
             
@@ -168,43 +179,46 @@ def protected(expired, filename):
         return 'Error. code=005. Cannot get files.'
            
 @app.route('/elearning/<ID>')
-def elearning(ID):                   
-    [courseid, userid, clear, enc, coursecode] = getinfo(ID)
+@app.route('/elearning/<ID>/<orgkey>')
+def elearning(ID, orgkey='gcp01'):
+    [courseid, userid, clear, enc, coursecode] = getinfo(ID, orgkey)
     
     if userid is None:
         return 'Error. code=006. Unathorized access.'
         
     session['userid'] = userid
-    return redirect('/course/' + get_dt_in_str(30) + '/' + coursecode + '/story.html?ID=' + ID)
+    return redirect('/course/' + get_dt_in_str(30) + '/' + orgkey + '/' + coursecode + '/story.html?ID=' + ID)
                 
-@app.route('/score/<ID>', methods=['GET', 'POST'])                 
-def score(ID):    
+@app.route('/score/<ID>', methods=['GET', 'POST'])
+@app.route('/score/<ID>/<orgkey>', methods=['GET', 'POST'])
+def score(ID, orgkey='gcp01'):
         
     if request.method == "GET":
         return 'Error. code=005. Unathorized access.'
             
     score = request.form['score']        
-    [courseid, userid, clear, enc, coursecode] = getinfo(ID)
-    save_score(userid, courseid, score)
+    [courseid, userid, clear, enc, coursecode] = getinfo(ID, orgkey)
+    save_score(userid, courseid, score, orgkey)
     
-    return render_template('score.html', user=get_user_name(userid), coursecode=coursecode, score=score)    
+    return render_template('score.html', user=get_user_name(userid, orgkey), coursecode=coursecode, score=score)
   
 ################################################################################
 # serve
 ################################################################################
           
-number_of_processes = 3           
-listener = _tcp_listener(('', 8084))
+
 
 def serve_forever(listener):
     pywsgi.WSGIServer(listener, application=app, log=None).serve_forever()
     
-if __name__ == '__main__':      
-    
+if __name__ == '__main__':
+
     if this_is_debugging == True:
         app.run(host="0.0.0.0", port=8080, debug=this_is_debugging)
-    else:    
-        
+    else:
+        number_of_processes = 3
+        listener = _tcp_listener(('', 8084))
+
         for i in range(number_of_processes):
             print ("starting process" + str(i))
             Process(target=serve_forever, args=(listener,)).start()

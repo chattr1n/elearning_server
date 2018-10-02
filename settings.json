@@ -1,0 +1,4 @@
+{
+  "gcp01": "mongodb://devuser:%7ETesting0001@aws-ap-southeast-1-portal.0.dblayer.com:15718,aws-ap-southeast-1-portal.2.dblayer.com:15718/gcp01?ssl=true&ssl_cert_reqs=CERT_NONE",
+  "gcp02": "mongodb://devuser:%7ETesting0001@aws-ap-southeast-1-portal.0.dblayer.com:15718,aws-ap-southeast-1-portal.2.dblayer.com:15718/gcp02?ssl=true&ssl_cert_reqs=CERT_NONE"
+}
