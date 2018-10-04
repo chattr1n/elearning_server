@@ -9,9 +9,9 @@ print(make_md5('ROODEEISTHEBESTNick'))
 import hashlib
 
 courseid = '5b831de844f5b030f89a1740'
-userid = 'epCFQqF2XcaPgwRi8'
+userid = 'jXzieTtjXiYE8Gn84'
 
-clear = courseid + '|' + userid
+clear = 'gcp02|5b831de844f5b030f89a1740|jXzieTtjXiYE8Gn84'
 
 enc = '4b93b608174e49f7' + clear
 

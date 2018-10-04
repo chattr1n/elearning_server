@@ -39,7 +39,7 @@ log.setLevel(logging.ERROR)
 # debugging
 ################################################################################
 
-this_is_debugging = True
+this_is_debugging = False
 
 ################################################################################
 # encryption
@@ -76,7 +76,7 @@ def md5_checker(clear, enc):
 
 def getinfo(ID):
     [orgkey, courseid, userid, enc] = ID.split('|')
-    clear = courseid + '|' +  userid    
+    clear = orgkey + '|' + courseid + '|' +  userid    
     
     if not md5_checker(clear, enc):        
         return [None, None, None, None, None, None]
@@ -156,12 +156,13 @@ def special_requirement(f):
             else:
                 return 'Error. code=001. Unathorized access.'
         except Exception as e:            
+            print(e)
             return 'Error. code=002. Unathorized access.'  
     return wrap
         
 @app.route('/course/<expired>/<path:filename>')
 @special_requirement
-def protected(expired, filename, orgkey):
+def protected(expired, filename):
     
     if filename.split('/')[1] in ('story.html', 'story_flash.html', 'story_html5.html'):        
         ID = request.args.get('ID')
