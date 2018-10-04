@@ -74,12 +74,12 @@ def md5_checker(clear, enc):
 # helper
 ################################################################################    
 
-def getinfo(ID, orgkey):
-    [courseid, userid, enc] = ID.split('|')
+def getinfo(ID):
+    [orgkey, courseid, userid, enc] = ID.split('|')
     clear = courseid + '|' +  userid    
     
     if not md5_checker(clear, enc):        
-        return [None, None, None, None, None]
+        return [None, None, None, None, None, None]
 
     mongo = mongos[orgkey]
 
@@ -90,10 +90,10 @@ def getinfo(ID, orgkey):
             break
         
     if coursecode == '':
-        return [None, None, None, None, None]
+        return [None, None, None, None, None, None]
 
     # print([courseid, userid, clear, enc, coursecode])        
-    return  [courseid, userid, clear, enc, coursecode]
+    return  [orgkey, courseid, userid, clear, enc, coursecode]
         
 def get_dt_in_str(addtime):
     dt = datetime.now() + timedelta(minutes=addtime)
@@ -159,13 +159,13 @@ def special_requirement(f):
             return 'Error. code=002. Unathorized access.'  
     return wrap
         
-@app.route('/course/<expired>/<orgkey>/<path:filename>')
+@app.route('/course/<expired>/<path:filename>')
 @special_requirement
 def protected(expired, filename, orgkey):
     
     if filename.split('/')[1] in ('story.html', 'story_flash.html', 'story_html5.html'):        
         ID = request.args.get('ID')
-        [courseid, userid, clear, enc, coursecode] = getinfo(ID, orgkey)
+        [orgkey, courseid, userid, clear, enc, coursecode] = getinfo(ID)
         if userid is None:
             return 'Error. code=003. Bad session.'
             
@@ -179,34 +179,30 @@ def protected(expired, filename, orgkey):
         return 'Error. code=005. Cannot get files.'
            
 @app.route('/elearning/<ID>')
-@app.route('/elearning/<ID>/<orgkey>')
-def elearning(ID, orgkey='gcp01'):
-    [courseid, userid, clear, enc, coursecode] = getinfo(ID, orgkey)
+def elearning(ID):
+    [orgkey, courseid, userid, clear, enc, coursecode] = getinfo(ID)
     
     if userid is None:
         return 'Error. code=006. Unathorized access.'
         
     session['userid'] = userid
-    return redirect('/course/' + get_dt_in_str(30) + '/' + orgkey + '/' + coursecode + '/story.html?ID=' + ID)
+    return redirect('/course/' + get_dt_in_str(30) + '/' + coursecode + '/story.html?ID=' + ID)
                 
 @app.route('/score/<ID>', methods=['GET', 'POST'])
-@app.route('/score/<ID>/<orgkey>', methods=['GET', 'POST'])
-def score(ID, orgkey='gcp01'):
+def score(ID):
         
     if request.method == "GET":
         return 'Error. code=005. Unathorized access.'
             
     score = request.form['score']        
-    [courseid, userid, clear, enc, coursecode] = getinfo(ID, orgkey)
+    [orgkey, courseid, userid, clear, enc, coursecode] = getinfo(ID)
     save_score(userid, courseid, score, orgkey)
     
     return render_template('score.html', user=get_user_name(userid, orgkey), coursecode=coursecode, score=score)
   
 ################################################################################
 # serve
-################################################################################
-          
-
+################################################################################          
 
 def serve_forever(listener):
     pywsgi.WSGIServer(listener, application=app, log=None).serve_forever()
