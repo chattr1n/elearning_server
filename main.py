@@ -195,7 +195,8 @@ def score(ID):
     if request.method == "GET":
         return 'Error. code=005. Unathorized access.'
             
-    score = request.form['score']        
+    # score = request.form['score']        
+    score = 100
     [orgkey, courseid, userid, clear, enc, coursecode] = getinfo(ID)
     save_score(userid, courseid, score, orgkey)
     
