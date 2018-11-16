@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<bwFrame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" default_layout="pxabnsnfns10110000101" textdirection="ltr" device="true" fontscale="100" kbshortcuts="false" skip_nav_enabled="true" chromeless="false" outputtype="undefined" theme="classic">
+<bwFrame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" default_layout="pxabnsnfns10110000101" textdirection="ltr" device="false" fontscale="100" kbshortcuts="false" skip_nav_enabled="true" chromeless="false" outputtype="undefined" theme="classic">
   <layouts>
     <layout name="npnxnanbsnfns10110000101" font="Open Sans" controllayout="npnxnanbsnfns10110000101" colorscheme="pxabnsnfns10110000101" string_table="pxabnsnfns10110000101" />
     <layout name="pxabnsnfns10110000101" font="Open Sans" controllayout="pxabnsnfns10110000101" colorscheme="pxabnsnfns10110000101" string_table="pxabnsnfns10110000101" />
@@ -11,7 +11,7 @@
     <optiongroups>
       <optiongroup name="sidebaroptions">
         <options>
-          <option name="title_enabled" value="false">
+          <option name="title_enabled" value="true">
             <options>
               <option name="title_text" value="ELCOR11" />
             </options>
@@ -30,8 +30,8 @@
               <listitem name="resources" value="false" group="linkright" />
               <listitem name="customlink" value="true" group="linkright">
                 <properties>
-                  <property name="title" value="EXIT" />
-                  <property name="data" value="5xhXkGeC02g" />
+                  <property name="title" value="Exit" />
+                  <property name="data" value="65NwGSKdRhK" />
                   <property name="ignoreSlideLock" value="true" />
                 </properties>
               </listitem>
@@ -42,7 +42,7 @@
           </optionlist>
           <option name="time_enabled" value="false">
             <options>
-              <option name="time_format" value="" />
+              <option name="time_format" value="elapsed" />
             </options>
           </option>
           <option name="video_enabled" value="false">
@@ -1116,6 +1116,17 @@
           </color>
         </group_colors>
       </color_group>
+      <color_group name="HTML">
+        <group_colors>
+          <color name="htmlpage_bg_color">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xFFFFFF" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+        </group_colors>
+      </color_group>
     </colorscheme>
   </colorschemes>
   <string_tables>
@@ -1180,12 +1191,31 @@
   <nav_data>
     <outline>
       <links>
-        <slidelink slideid="_player.6BLkCpBvid6" displaytext="TH_Guest Service Module One" expand="true" type="slide">
+        <slidelink slideid="_player.6r4Q6Lgn7k1" displaytext="BM2_Hotels G Online Orientation_Jan_2017" expand="true" type="slide">
           <links>
-            <slidelink slideid="_player.6BLkCpBvid6.6CoIeV2yMdF" displaytext="Untitled Slide" expand="false" type="slide" />
-            <slidelink slideid="_player.6BLkCpBvid6.62hyaW9mCwe" displaytext="ข้อใด คือ วิสัยทัศน์ของ GCPH " expand="false" type="slide" />
-            <slidelink slideid="_player.6BLkCpBvid6.6Bq9YjfXnc8" displaytext="Match the letters in the acronym 'G-STAR' with their meanings" expand="false" type="slide" />
-            <slidelink slideid="_player.6BLkCpBvid6.6ifwK36iOpm" displaytext="Untitled Slide" expand="false" type="slide" />
+            <slidelink slideid="_player.6r4Q6Lgn7k1.5gSmUviYUQR" displaytext="Untitled Slide" expand="false" type="slide" />
+            <slidelink slideid="_player.6r4Q6Lgn7k1.6VFADwxftKe" displaytext="Untitled Slide" expand="false" type="slide" />
+            <slidelink slideid="_player.6r4Q6Lgn7k1.5lgrPxg7g1K" displaytext="Untitled Slide" expand="false" type="slide" />
+            <slidelink slideid="_player.6r4Q6Lgn7k1.6r2a1NMeBgh" displaytext="Untitled Slide" expand="false" type="slide" />
+            <slidelink slideid="_player.6r4Q6Lgn7k1.5nwqiZZxcBO" displaytext="Untitled Slide" expand="false" type="slide" />
+            <slidelink slideid="_player.6r4Q6Lgn7k1.6Ys9F4CIjsB" displaytext="ေအာက္ေဖာ္ျပပါမည္သည္႔ဟိုတယ္မ်ားသည္GCPHက တာ၀န္ယူ စီမံအုပ္ခ်ဳပ္ပါသလဲ။" expand="false" type="slide" />
+            <slidelink slideid="_player.6r4Q6Lgn7k1.6Lb5wIpaPKO" displaytext="ေအာက္ေဖာ္ျပပါဟိုတယ္မ်ားသည္ မည္သည္႔နိုင္ငံတြင္တည္ရွိသနည္း။ " expand="false" type="slide" />
+            <slidelink slideid="_player.6r4Q6Lgn7k1.5zzPOiNrZb7" displaytext="ကြ်န္ေတာ္တို႔ဧည္႔သည္မ်ား။ " expand="false" type="slide" />
+            <slidelink slideid="_player.6r4Q6Lgn7k1.64ZlqKbRHN1" displaytext="Our Brand Promise " expand="false" type="slide" />
+            <slidelink slideid="_player.6r4Q6Lgn7k1.6HqjkOTRFAG" displaytext="GCPH ၏ တာ၀န္ ႏွင္႔ အေျမာ္အျမင္။" expand="false" type="slide" />
+            <slidelink slideid="_player.6r4Q6Lgn7k1.5eVr96zQUzO" displaytext="အဓိကစံတန္ဘိုးမ်ား။ " expand="false" type="slide" />
+            <slidelink slideid="_player.6r4Q6Lgn7k1.5zX9SwSY27a" displaytext="Untitled Slide" expand="false" type="slide" />
+            <slidelink slideid="_player.6r4Q6Lgn7k1.5twwCAM3G9t" displaytext="G-STAR – our Guest Service Ethos" expand="false" type="slide" />
+            <slidelink slideid="_player.6r4Q6Lgn7k1.5d6IcBidZga" displaytext="Untitled Slide" expand="false" type="slide" />
+            <slidelink slideid="_player.6r4Q6Lgn7k1.6YnNURffRXW" displaytext="ကြ်န္ေတာ္တို႔ တံဆိပ္အမည္၏ကတိက၀တ္သည္- ကတိက၀တ္ကို &#xA;ေရွ႔တန္းတင္၍ ၀န္ေဆာင္မွုကို ေလ်ာ႔၍လုပ္ေဆာင္ေပးျခင္းျဖစ္သည္။ " expand="false" type="slide" />
+            <slidelink slideid="_player.6r4Q6Lgn7k1.5XhtJjIygXJ" displaytext="ကြ်န္ေတာ္တို႔ရဲ႕ အဓိကစံတန္ဘိုး(၄)မ်ိုးကဘာလဲ။" expand="false" type="slide" />
+            <slidelink slideid="_player.6r4Q6Lgn7k1.6ih7bPXb3Gk" displaytext="G-Sessions" expand="false" type="slide" />
+            <slidelink slideid="_player.6r4Q6Lgn7k1.5ze68OUJe76" displaytext="Untitled Slide" expand="false" type="slide" />
+            <slidelink slideid="_player.6r4Q6Lgn7k1.64GEzK0nqhZ" displaytext="Untitled Slide" expand="false" type="slide" />
+            <slidelink slideid="_player.6r4Q6Lgn7k1.6LlljSQNzJ9" displaytext="MEET OUR TEAM" expand="false" type="slide" />
+            <slidelink slideid="_player.6r4Q6Lgn7k1.67zLCoAxpsg" displaytext="ကြ်န္ေတာ္တို႔ရဲ႕အစားေသာက္ႏွင္႔အေဖ်ာ္ယမကာစီးပြါးေရးလုပ္ငန္းအမည္ကဘာလဲ။" expand="false" type="slide" />
+            <slidelink slideid="_player.6r4Q6Lgn7k1.6CLYzvdsujN" displaytext="ကြ်န္ေတာ္ကို႔ရဲ႕ CEO သည္ Christophe Vielle ျဖစ္သည္။" expand="false" type="slide" />
+            <slidelink slideid="_player.6r4Q6Lgn7k1.6cAEOtDXfy6" displaytext="Untitled Slide" expand="false" type="slide" />
           </links>
         </slidelink>
       </links>
