@@ -89,10 +89,11 @@ ENV/
 .ropeproject
 
 
-protected/
 
 settings.json
 
 .c9/
 
 .idea
+
+

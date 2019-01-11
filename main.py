@@ -39,7 +39,7 @@ log.setLevel(logging.ERROR)
 # debugging
 ################################################################################
 
-this_is_debugging = False
+this_is_debugging = True
 
 ################################################################################
 # encryption
@@ -139,7 +139,7 @@ def get_user_name(userid, orgkey):
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return 'Hello from elearning server. The current time is ' + datetime.UtcNow.ToString('s')
     
 @app.before_request
 def make_session_permanent():
@@ -214,7 +214,7 @@ if __name__ == '__main__':
     if this_is_debugging == True:
         app.run(host="0.0.0.0", port=8080, debug=this_is_debugging)
     else:
-        number_of_processes = 3
+        number_of_processes = 5
         listener = _tcp_listener(('', 8084))
 
         for i in range(number_of_processes):
