@@ -22,7 +22,7 @@ app = Flask(__name__, instance_path = os.getcwd())
 app.secret_key = '4b93b608174e49f7'
 app.config['SESSION_TYPE'] = 'filesystem'    
 
-timeout_in_minute = 60
+timeout_in_minute = 20
 
 mongos = {}
 connectionstrings = {}
@@ -101,7 +101,11 @@ def get_dt_in_str(addtime):
     
 def time_has_passed(str):    
     dt1 = datetime.strptime(decrypt(str), '%Y%m%d%H%M%S')
-    dt2 = datetime.now()    
+    dt2 = datetime.now()  
+    
+    # print(dt1)
+    # print(dt2)
+    
     return dt1 < dt2 # true if time has passed
     
 def save_score(userid, courseid, score, orgkey):
@@ -160,22 +164,22 @@ def special_requirement(f):
             return 'Error. code=002. Unathorized access.'  
     return wrap
         
-@app.route('/course/<expired>/<path:filename>')
+@app.route('/course/<expired>/<orgkey>/<path:filename>')
 @special_requirement
-def protected(expired, filename):
+def protected(expired, orgkey, filename):    
     
     if filename.split('/')[1] in ('story.html', 'story_flash.html', 'story_html5.html'):        
         ID = request.args.get('ID')
         [orgkey, courseid, userid, clear, enc, coursecode] = getinfo(ID)
         if userid is None:
             return 'Error. code=003. Bad session.'
+        if time_has_passed(expired):
+            return 'Error. code=004. Session Expired.'
             
     try:        
         path = os.path.join(app.instance_path, 'protected')        
-        if not time_has_passed(expired):
-            return send_from_directory(path,filename)    
-        else:
-            return 'Error. code=004. Session Expired.'
+        path = os.path.join(path, orgkey)            
+        return send_from_directory(path,filename)    
     except Exception as e:
         return 'Error. code=005. Cannot get files.'
            
@@ -187,7 +191,7 @@ def elearning(ID):
         return 'Error. code=006. Unathorized access.'
         
     session['userid'] = userid
-    return redirect('/course/' + get_dt_in_str(30) + '/' + coursecode + '/story.html?ID=' + ID)
+    return redirect('/course/' + get_dt_in_str(30) + '/' + orgkey + '/' + coursecode  + '/story.html?ID=' + ID)
                 
 @app.route('/score/<ID>', methods=['GET', 'POST'])
 def score(ID):

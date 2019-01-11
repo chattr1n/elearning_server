@@ -1,4 +1,4 @@
-#!/home/produser/elearning/venv/bin/python
+#!/home/ubuntu/workspace/venv/bin/python
 
 import sys
 import getopt

@@ -1,16 +1,3 @@
 {
-  "gcp01dev": "mongodb://devuser:%7ETesting0001@aws-ap-southeast-1-portal.0.dblayer.com:15718,aws-ap-southeast-1-portal.2.dblayer.com:15718/gcp01?ssl=true&ssl_cert_reqs=CERT_NONE",
-  "gcp02dev": "mongodb://devuser:%7ETesting0001@aws-ap-southeast-1-portal.0.dblayer.com:15718,aws-ap-southeast-1-portal.2.dblayer.com:15718/gcp02?ssl=true&ssl_cert_reqs=CERT_NONE",
-  "roodee-demo": "mongodb://devuser:%7ETesting0001@aws-ap-southeast-1-portal.0.dblayer.com:15718,aws-ap-southeast-1-portal.2.dblayer.com:15718/roodee-demo?ssl=true&ssl_cert_reqs=CERT_NONE",
-  "ho": "mongodb://produser:%7EProding0001@portal-ssl685-2.gcp.1938274060.composedb.com:16786,portal-ssl701-0.gcp.1938274060.composedb.com:16786/gcp01?ssl=true&ssl_cert_reqs=CERT_NONE",
-  "pgb": "mongodb://produser:%7EProding0001@portal-ssl685-2.gcp.1938274060.composedb.com:16786,portal-ssl701-0.gcp.1938274060.composedb.com:16786/gcp02?ssl=true&ssl_cert_reqs=CERT_NONE",
-  "pgp": "mongodb://produser:%7EProding0001@portal-ssl685-2.gcp.1938274060.composedb.com:16786,portal-ssl701-0.gcp.1938274060.composedb.com:16786/gcp03?ssl=true&ssl_cert_reqs=CERT_NONE",
-  "chgp": "mongodb://produser:%7EProding0001@portal-ssl685-2.gcp.1938274060.composedb.com:16786,portal-ssl701-0.gcp.1938274060.composedb.com:16786/gcp04?ssl=true&ssl_cert_reqs=CERT_NONE",
-  "hgs": "mongodb://produser:%7EProding0001@portal-ssl685-2.gcp.1938274060.composedb.com:16786,portal-ssl701-0.gcp.1938274060.composedb.com:16786/gcp05?ssl=true&ssl_cert_reqs=CERT_NONE",
-  "rgs": "mongodb://produser:%7EProding0001@portal-ssl685-2.gcp.1938274060.composedb.com:16786,portal-ssl701-0.gcp.1938274060.composedb.com:16786/gcp06?ssl=true&ssl_cert_reqs=CERT_NONE",
-  "hgy": "mongodb://produser:%7EProding0001@portal-ssl685-2.gcp.1938274060.composedb.com:16786,portal-ssl701-0.gcp.1938274060.composedb.com:16786/gcp07?ssl=true&ssl_cert_reqs=CERT_NONE",
-  "ilh": "mongodb://produser:%7EProding0001@portal-ssl685-2.gcp.1938274060.composedb.com:16786,portal-ssl701-0.gcp.1938274060.composedb.com:16786/gcp08?ssl=true&ssl_cert_reqs=CERT_NONE",
-  "tsh": "mongodb://produser:%7EProding0001@portal-ssl685-2.gcp.1938274060.composedb.com:16786,portal-ssl701-0.gcp.1938274060.composedb.com:16786/gcp09?ssl=true&ssl_cert_reqs=CERT_NONE",
-  "rghk": "mongodb://produser:%7EProding0001@portal-ssl685-2.gcp.1938274060.composedb.com:16786,portal-ssl701-0.gcp.1938274060.composedb.com:16786/gcp10?ssl=true&ssl_cert_reqs=CERT_NONE",
-  "shk": "mongodb://produser:%7EProding0001@portal-ssl685-2.gcp.1938274060.composedb.com:16786,portal-ssl701-0.gcp.1938274060.composedb.com:16786/gcp11?ssl=true&ssl_cert_reqs=CERT_NONE"
+  "roodee-demo": "mongodb://devuser:%7ETesting0001@aws-ap-southeast-1-portal.0.dblayer.com:15718,aws-ap-southeast-1-portal.2.dblayer.com:15718/roodee-demo?ssl=true&ssl_cert_reqs=CERT_NONE"
 }
