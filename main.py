@@ -183,8 +183,13 @@ def protected(expired, orgkey, filename):
     except Exception as e:
         return 'Error. code=005. Cannot get files.'
            
-@app.route('/elearning/<ID>')
-def elearning(ID):
+@app.route('/elearning', methods=['GET', 'POST'])
+def elearning():
+    
+    if request.method == "GET":
+        return 'Error. code=005. Unathorized access.'
+        
+    ID = request.form['ID']
     [orgkey, courseid, userid, clear, enc, coursecode] = getinfo(ID)
     
     if userid is None:
